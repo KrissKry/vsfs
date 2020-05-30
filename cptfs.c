@@ -82,7 +82,12 @@ int cptfs(char* filename)
 
             /* check next n blocks to see if src fits into vsfs */
             for(inner_index = 0; inner_index < data_blocks_needed; inner_index++) {
+                
+                if(index + inner_index == sb.dataBlocksNum) {
 
+                    has_space = false;
+                    break;
+                }
                 if(dBMP.taken[index + inner_index] == '\0') {
                     has_space = true;
                 }
