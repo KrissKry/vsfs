@@ -8,9 +8,6 @@ int rm(char* filename)
     int bmpindex;
     int blockNum;
     char null;
-    // int name_index;
-    // int filename_index;
-    // char buf[2048];
     SuperBlock sb;
     iNodeTakenBMP nodebmp;
     dataTakenBMP databmp;
@@ -41,7 +38,7 @@ int rm(char* filename)
     {
         /* if bitmap shows node as taken */
         if( nodebmp.taken[index] != '\0' ) {
-            
+            //printf("node %d taken, filename %s\n", index, nodes[index].name); //needed before fflush in cptfs.c
             /* if name under that node is equal to given filename */
             if ( strcmp(nodes[index].name, filename) == 0 ) {
                 
@@ -76,24 +73,5 @@ int rm(char* filename)
         }
     }
     printf("File not found!\n");
-    return VSFSFILENOTEXISTS;
-
-
-    /*moves forward in file by Superblock, inode_bitmap and data_bitmap*/
-    //fseek(fp, 1536, SEEK_SET);
-    /* reads  inodes */
-    //fread(buf, 2048, 1, fp);
-
-    // for(index = 0; index < sizeof(buf); index+64)
-    // {
-    //     filename_index = 0;
-    //     for(name_index = index + 16; name_index < index + 64; name_index++)
-    //     {
-    //         if ( filename[filename_index] == '\0')
-    //         if(buf[name_index] = '\0')
-    //             break;
-
-            
-    //     }
-    // }    
+    return VSFSFILENOTEXISTS;  
 }

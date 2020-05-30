@@ -32,10 +32,6 @@ int mkfs() {
     /*nullify whole file */
     null = '\0';
     fwrite(&null, sizeof(char), FS_SIZE, fp);
-    // for(index = 0; index < FS_SIZE; index++) {
-    //     fwrite(&null, sizeof(char), 1, fp);
-    //     //memset
-    // }
 
     fclose(fp);
 

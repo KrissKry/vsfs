@@ -52,8 +52,8 @@ int cpffs(char* filename)
 
     if( file_found ) 
     {
-        
-        fseek(fp, dest_starting_block*sb.dataBlockSize, SEEK_SET);
+        /* move to correct data block, read dest_size number of bytes to dest_buf */
+        fseek(fp, (sb.dataBlockOffset+dest_starting_block)*sb.dataBlockSize, SEEK_SET);
         fread(dest_buf, sizeof(char), dest_size, fp);
         fclose(fp);
 

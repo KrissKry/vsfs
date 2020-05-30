@@ -11,8 +11,10 @@ int main(int argc, char* argv[])
 
     if( (strcmp(argv[1], "rm") == 0) ) {
         
-        if(argc < 3)
+        if(argc < 3) {
+            printf("Missing arguments!\n");
             return ARGSMISSING;
+        }
 
         return rm(argv[2]);
     }
@@ -22,16 +24,20 @@ int main(int argc, char* argv[])
 
     if( (strcmp(argv[1], "cptfs") == 0) ){
 
-        if(argc < 3)
+        if(argc < 3) {
+            printf("Missing arguments!\n");
             return ARGSMISSING;
+        }
         
         return cptfs(argv[2]);
     }
 
     if( (strcmp(argv[1], "cpffs") == 0) ){
 
-        if(argc < 3)
+        if(argc < 3) {
+            printf("Missing arguments!\n");
             return ARGSMISSING;
+        }
         
         return cpffs(argv[2]);
     }

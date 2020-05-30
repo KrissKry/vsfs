@@ -46,25 +46,27 @@ int fsinfo()
             printf("I|");
         if (index >= sb.dataBlockOffset)
             printf("D|");
-        if(index % 15 == 0 && index > 0)
+        if(index % 15 == 0 && index > 0 && index < sb.blocksNum - 2)
             printf("\n ");
     }
+    printf("]\n");
 
     /* print each node info and collect visual data*/
     for ( index = 0; index < sb.iNodesNum; index++)
     {
         if( nodebmp.taken[index] != '\0' ) {
-            printf("Node %d - bBlock %d - filename %s - filesize %d \n", index, nodes[index].startingBlock, nodes[index].name, nodes[index].size);
+            printf("Node %d - dBlock %d - name %s - size %dB \n", index, nodes[index].startingBlock, nodes[index].name, nodes[index].size);
             blocksOccupied += 1 + (nodes[index].size / sb.dataBlockSize);
             realSize += nodes[index].size;
             nodesOccupied++;
         }
-        else
-            printf("Node %d unused\n", index);
+        //uncomment if you want more useless data in ostream
+        //else   
+            //printf("Node %d unused\n", index);
     }
 
     /* print visually disk usage */
-    printf("Disk usage:\n");
+    printf("Data Block usage:\n");
     for (index = 0; index < sb.dataBlocksNum; index++)
     {
         if(blocksOccupied > 0) {
@@ -73,14 +75,11 @@ int fsinfo()
         }
         else 
             printf("_");
-
-        //if (index > 0 && index % 5 == 0)
-            //printf("\n");
     }
 
     /* print visually real disk usage */
-    realDiskUsage = 100 * (realSize / (sb.dataBlocksNum*sb.dataBlockSize) );
-    printf("\nReal disk usage:\n");
+    realDiskUsage = 100 * ((double) realSize / (sb.dataBlocksNum*sb.dataBlockSize) );
+    printf("\nReal disk usage:\n", realDiskUsage);
     for (index = 0; index < 100; index++)
     {
         if (index < realDiskUsage)
@@ -88,15 +87,14 @@ int fsinfo()
         else
             printf("_");
 
-        //if (index % 9 == 0 && index > 0)
-            //printf("\n");
+        if (index == 49)
+            printf("\n");
         
     }
 
     /* print number of nodes in use and percentage of total */
     nodeUsage = (double)nodesOccupied / sb.iNodesNum * 100;
-    printf("\nNodes currently in use: %d out of %d which is %.2f%\n", nodesOccupied, sb.iNodesNum, nodeUsage);
+    printf("\nNodes currently in use: %d out of %d which is %.2f% \n", nodesOccupied, sb.iNodesNum, nodeUsage);
 
-    printf("sizeofnode %zu\n", sizeof(iNode));
     return 0;
 }
