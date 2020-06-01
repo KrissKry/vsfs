@@ -17,7 +17,7 @@ int cptfs(char* filename)
     int starting_block;
     int src_size;
     char taken;
-    bool has_space;
+    int has_space;
     char src_buf[BLOCK_SIZE*DATA_BLOCK_COUNT];
     time_t now = time(0);
 
@@ -73,7 +73,7 @@ int cptfs(char* filename)
     /* find first available set of blocks for data */
     for(index = 0; index < sb.dataBlocksNum; index++) {
 
-        has_space = false;
+        has_space = 0;
 
         /* look for untaken data block */
         if (dBMP.taken[index] == '\0') {
@@ -82,19 +82,19 @@ int cptfs(char* filename)
 
             /* check next n blocks to see if src fits into vsfs */
             for(inner_index = 0; inner_index < data_blocks_needed; inner_index++) {
-                
-                if(index + inner_index == sb.dataBlocksNum) {
 
-                    has_space = false;
+                if(index + inner_index == sb.dataBlocksNum)
+                {
+                    has_space = 0;
                     break;
                 }
                 if(dBMP.taken[index + inner_index] == '\0') {
-                    has_space = true;
+                    has_space = 1;
                 }
                 else
                 {
                     /* break the inner loop on first failure */
-                    has_space = false;
+                    has_space = 0;
                     break;
                 }
 

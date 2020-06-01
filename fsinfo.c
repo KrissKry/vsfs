@@ -11,7 +11,8 @@ int fsinfo()
     double realDiskUsage = 0;
     double nodeUsage;
     SuperBlock sb;
-    iNodeTakenBMP nodebmp;
+    iNodeTakenBMP nBMP;
+    dataTakenBMP dBMP;
     iNode nodes[INODE_COUNT];
 
     /* try opening filesystem */
@@ -26,11 +27,17 @@ int fsinfo()
 
     /* move to iNodes bitmap and read */
     fseek(fp, sb.iNodeTakenBMPOffset*sb.dataBlockSize, SEEK_SET);
-    fread(&nodebmp, sizeof(char), sb.iNodesNum, fp);
+    fread(&nBMP, sizeof(char), sb.iNodesNum, fp);
 
+    /* Move to data bitmap and read */
+    fseek(fp, sb.dataTakenBMPOffset*sb.dataBlockSize, SEEK_SET);
+    fread(&dBMP, sizeof(char), sb.dataBlocksNum, fp);
+    
     /* move to nodes and read */
     fseek(fp, sb.iNodesOffset*sb.dataBlockSize, SEEK_SET);
     fread(&nodes, sb.iNodeSize, sb.iNodesNum, fp);
+
+    
 
     /* print block type */
     printf("SB - Superblock, n - iNodeBitmap, d - dataBitmap, I - iNode block, D - data block\n");
@@ -54,24 +61,20 @@ int fsinfo()
     /* print each node info and collect visual data*/
     for ( index = 0; index < sb.iNodesNum; index++)
     {
-        if( nodebmp.taken[index] != '\0' ) {
+        if( nBMP.taken[index] != '\0' ) {
             printf("Node %d - dBlock %d - name %s - size %dB \n", index, nodes[index].startingBlock, nodes[index].name, nodes[index].size);
             blocksOccupied += 1 + (nodes[index].size / sb.dataBlockSize);
             realSize += nodes[index].size;
             nodesOccupied++;
         }
-        //uncomment if you want more useless data in ostream
-        //else   
-            //printf("Node %d unused\n", index);
     }
 
     /* print visually disk usage */
     printf("Data Block usage:\n");
     for (index = 0; index < sb.dataBlocksNum; index++)
     {
-        if(blocksOccupied > 0) {
+        if(dBMP.taken[index] != '\0') {
             printf("#");
-            blocksOccupied--;
         }
         else 
             printf("_");
@@ -79,7 +82,7 @@ int fsinfo()
 
     /* print visually real disk usage */
     realDiskUsage = 100 * ((double) realSize / (sb.dataBlocksNum*sb.dataBlockSize) );
-    printf("\nReal disk usage:\n", realDiskUsage);
+    printf("\nReal disk usage:\n");
     for (index = 0; index < 100; index++)
     {
         if (index < realDiskUsage)

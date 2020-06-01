@@ -1,4 +1,4 @@
-#include "memory.h"
+/*#include "memory.h"*/
 #include "fs.h"
 
 
@@ -13,9 +13,9 @@ int mkfs() {
     iNode inode[INODE_COUNT];
     iNodeTakenBMP nodeBMP;
     dataTakenBMP dataBMP;
-
+    
     if (fp = fopen("verysmallfilesystem", "r") ) {
-        //file system already exists
+        /* file system already exists */
         printf("VSFS already exists!");
         fclose(fp);
         return VSFSEXISTS;
@@ -24,15 +24,17 @@ int mkfs() {
     /* Tries creating file with write (a) and read (+) permissions in binary mode (b)
     *  Stream positioned at the end of the file */
     if ( !(fp = fopen("verysmallfilesystem", "a+b") ) ) {
-        //file system cannot be created
+        /*file system cannot be created */
         printf("VSFS cannot be created!");
         return VSFSNOCREATION;
     } 
 
     /*nullify whole file */
     null = '\0';
+    fseek(fp, 0, SEEK_SET);
     fwrite(&null, sizeof(char), FS_SIZE, fp);
 
+    fflush(fp);
     fclose(fp);
 
     /* Insert correct data */
@@ -42,7 +44,7 @@ int mkfs() {
     sb.iNodesNum = INODE_COUNT;
 
     sb.dataBlockSize = BLOCK_SIZE;
-    sb.iNodeSize = INODE_SIZE;
+    sb.iNodeSize = sizeof(iNode);
 
     sb.iNodeTakenBMPOffset = 1;
     sb.dataTakenBMPOffset = 2;
@@ -56,7 +58,7 @@ int mkfs() {
         return VSFSDISCARDED;
     }
 
-    for (index = 0; index < DATA_BLOCK_COUNT; index++) {
+    /*for (index = 0; index < DATA_BLOCK_COUNT; index++) {
         dataBMP.taken[index] = '\0';
     }
 
@@ -67,8 +69,10 @@ int mkfs() {
     memcpy( temp, &sb, sizeof(SuperBlock) );
     memcpy( temp + (sb.dataBlockSize * sb.iNodeTakenBMPOffset), nodeBMP.taken, sizeof(nodeBMP) );
     memcpy( temp + (sb.dataBlockSize * sb.dataTakenBMPOffset), dataBMP.taken, sizeof(dataBMP) );
-
-    fwrite(&sb, sizeof(temp),  1, fp);
+*/
+    fseek(fp, 0, SEEK_SET);
+    fwrite(&sb, sizeof(SuperBlock),  1, fp);
+    fflush(fp);
     fclose(fp);
 
     printf("VSFS successfully created!\n");

@@ -12,7 +12,7 @@ int cpffs(char* filename)
     int dest_size;
     int dest_starting_block;
     char dest_buf[DATA_BLOCK_COUNT*BLOCK_SIZE];
-    bool file_found = false;
+    int file_found = 0;
 
 
     /* try opening VSFS */
@@ -45,7 +45,7 @@ int cpffs(char* filename)
             printf("File %s found in VSFS.\n", filename);
             dest_size = nodes[index].size;
             dest_starting_block = nodes[index].startingBlock;
-            file_found = true;
+            file_found = 1;
             break;
         }
     }
